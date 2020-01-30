@@ -15,7 +15,7 @@ services:
     build: docker/config/php
     container_name: php72
     volumes:
-      - ./www:/var/www/html
+      - ..:/var/www/html
     networks:
       - dev_network
   varnish:
