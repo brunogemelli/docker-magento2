@@ -2,25 +2,27 @@ version: '3'
 services:
   nginx:
     image: nginx:1.17.3
-    container_name: nginx
+    container_name: conectouv2_nginx
     volumes:
       - ..:/var/www/html
       - ./config/nginx/conf.d:/etc/nginx/conf.d
+      - ./config/nginx/includes:/etc/nginx/includes
     ports:
       - "8080:80"
       - "443:443"
     networks:
       - dev_network
   php72:
-    build: docker/config/php
-    container_name: php72
+    build: config/php
+    container_name: conectouv2_php72
     volumes:
       - ..:/var/www/html
+      - /home/bruno/.ssh:/root/.ssh
     networks:
       - dev_network
   varnish:
     image: varnish:latest
-    container_name: varnish
+    container_name: conectouv2_varnish
     volumes:
       - ./config/varnish/default.vcl:/etc/varnish/default.vcl
     ports:
@@ -31,13 +33,12 @@ services:
       - dev_network
   mysql:
     image: mysql:5.7
-    container_name: mysql57
+    container_name: conectouv2_mysql57
     volumes:
       - ./data/mysql:/var/lib/mysql
+      - ./data/dumps:/var/dumps
     environment:
       - MYSQL_ROOT_PASSWORD=pw
-    ports:
-      - "3306:3306"
     networks:
       - dev_network
 networks:
