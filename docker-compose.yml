@@ -2,19 +2,19 @@ version: '3'
 services:
   nginx:
     image: nginx:1.17.3
-    container_name: conectouv2_nginx
+    container_name: magento_nginx
     volumes:
       - ..:/var/www/html
       - ./config/nginx/conf.d:/etc/nginx/conf.d
       - ./config/nginx/includes:/etc/nginx/includes
     ports:
-      - "8080:80"
+      #- "8080:80"
       - "443:443"
     networks:
       - dev_network
   php72:
     build: config/php
-    container_name: conectouv2_php72
+    container_name: magento_php72
     volumes:
       - ..:/var/www/html
       - /home/bruno/.ssh:/root/.ssh
@@ -22,7 +22,7 @@ services:
       - dev_network
   varnish:
     image: varnish:latest
-    container_name: conectouv2_varnish
+    container_name: magento_varnish
     volumes:
       - ./config/varnish/default.vcl:/etc/varnish/default.vcl
     ports:
@@ -33,12 +33,31 @@ services:
       - dev_network
   mysql:
     image: mysql:5.7
-    container_name: conectouv2_mysql57
+    container_name: magento_mysql57
     volumes:
       - ./data/mysql:/var/lib/mysql
       - ./data/dumps:/var/dumps
     environment:
       - MYSQL_ROOT_PASSWORD=pw
+    networks:
+      - dev_network
+  redis:
+    image: redis:3.0.7
+    container_name: magento_redis
+    ports:
+      - "6379:6379"
+    networks:
+      - dev_network
+  #elastic:
+    #image: elasticsearch:2
+    #container_name: magento_elastic
+    #ports:
+      #- "9200:9200"
+    #networks:
+      #- dev_network
+  rabbitmq:
+    image: rabbitmq:latest
+    container_name: magento_rabbitmq
     networks:
       - dev_network
 networks:
