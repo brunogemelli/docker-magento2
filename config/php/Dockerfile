@@ -31,8 +31,15 @@ RUN apt-get update && apt-get install -y --allow-unauthenticated \
 	&& docker-php-ext-enable xdebug \
 	&& docker-php-ext-enable mcrypt;
 
-#&& docker-php-ext-install mcrypt \
+### Install Sodium lib - Magento 2.3.2 bug
+RUN echo "deb http://deb.debian.org/debian stretch-backports main" >> /etc/apt/sources.list 
 
+RUN apt-get update 
+    && apt-get -t stretch-backports install -y \
+    	libsodium-dev
+    && docker-php-ext-install sodium;
+	
+	
 ### Install Mailhog
 ENV GOPATH /tmp
 RUN cd /tmp
