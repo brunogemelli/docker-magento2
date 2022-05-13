@@ -59,27 +59,24 @@ services:
       - ./data/rabbitmq:/var/lib/rabbitmq/mnesia
     networks:
       - dev_network
-  opensearch:
-    container_name: magento244ce_opensearch
-    image: opensearchproject/opensearch:1.2.4
+  elasticsearch:
+    container_name: magento244ce_elasticsearch
+    image: elasticsearch:7.16.3
     ports:
       - '9200:9200'
-      - '9600:9600'
+      - '9300:9300'
     environment:
       - discovery.type=single-node
-      - "DISABLE_SECURITY_PLUGIN=true"
     networks:
       - dev_network
-  opensearch-dashboard:
-    container_name: magento244ce_opensearch_dashboard
-    image: opensearchproject/opensearch-dashboards:1.2.0
+  kibana:
+    container_name: magento244ce_kibana
+    image: docker.elastic.co/kibana/kibana:7.16.3
     ports:
-      - '5601:5601'
-    expose:
-      - '5601'
+      - 5601:5601
     environment:
-      - 'OPENSEARCH_HOSTS=["http://opensearch:9200"]'
-      - "DISABLE_SECURITY_DASHBOARDS_PLUGIN=true"
+      - ELASTICSEARCH_URL=http://elasticsearch:9200
+      - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
     networks:
       - dev_network
   mailhog:
